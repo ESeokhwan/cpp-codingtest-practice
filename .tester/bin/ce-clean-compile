@@ -1,0 +1,1 @@
+make -C $DIR_HOME/.tester/console-test clean CUR_PATH=$PWD
