@@ -8,9 +8,17 @@ TMP_INPUT = $(CUR_PATH)/tmp_input.txt
 OUTPUT = $(CUR_PATH)/output.txt
 
 INPUT_COUNT := $(shell (read line; echo $$line) < $(INPUT))
+
+IS_INPUT_COUNT_VALIDATE := $(shell [ $(INPUT_COUNT) -lt 100 -a $(INPUT_COUNT) -gt 0 ] && echo true)
  
-all: $(TARGET) $(TMP_INPUT) $(OUTPUT)
+ifeq ($(IS_INPUT_COUNT_VALIDATE), true)
+  ALL = $(TARGET) $(TMP_INPUT) $(OUTPUT)
+else
+  ALL = INPUT_COUNT_ERROR
+endif
   
+all : $(ALL)
+
 clean:
 	@rm -f $(TARGET) $(TMP_INPUT) $(OUTPUT)
 	@echo CLEAN DONE
@@ -26,3 +34,7 @@ $(OUTPUT): $(TARGET)
 	@for x in {1..$(INPUT_COUNT)}; do $(TARGET); done < $(TMP_INPUT) > $(OUTPUT)
 	@rm -f $(TMP_INPUT)
 	@echo TEST INPUT FILE  DONE
+
+INPUT_COUNT_ERROR :
+	@echo '[ERROR] There should be count of input on top line of input.txt.'
+	@echo '        It should larger than 0 and smaller than 100.'
