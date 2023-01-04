@@ -1,0 +1,1 @@
+make -C $DIR_HOME/.tester/compile-only CUR_PATH=$PWD
