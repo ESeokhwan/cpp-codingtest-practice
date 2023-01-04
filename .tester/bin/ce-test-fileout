@@ -1,0 +1,2 @@
+make -C $DIR_HOME/.tester/auto-judge clean CUR_PATH=$PWD
+make -C $DIR_HOME/.tester/auto-judge CUR_PATH=$PWD
