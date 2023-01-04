@@ -1,2 +1,0 @@
-make -C $DIR_HOME/.tester clean CUR_PATH=$PWD
-make -C $DIR_HOME/.tester CUR_PATH=$PWD
