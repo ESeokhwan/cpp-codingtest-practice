@@ -1,5 +1,6 @@
 .DS_Store
 *.swp
 
+tmp_input.txt
 solution.out
 output.txt
