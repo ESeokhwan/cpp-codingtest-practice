@@ -31,8 +31,13 @@ $(TMP_INPUT): $(INPUT)
 Execution: $(TARGET)
 	@for x in {1..$(INPUT_COUNT)} \
 	;do \
+		start_t=`gdate +%s%N` && \
 		echo ====== TEST $$x Start ===== && \
 		$(TARGET) && \
+		end_t=`gdate +%s%N` && \
+		echo ------------------------- && \
+		time=`expr $$end_t - $$start_t` && \
+		echo take `expr $$time / 1000000`ms && \
 		echo =========================\\n \
 	;done < $(TMP_INPUT)
 	@rm -f $(TMP_INPUT)
