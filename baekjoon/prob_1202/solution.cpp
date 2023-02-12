@@ -3,19 +3,17 @@ using namespace std;
 
 int N, K;
 
-vector< pair<int, int> > gems;
-vector< int > bags;
+pair<int, int> gems[300000];
+int bags[300000];
 
-priority_queue<int> pq;
+priority_queue<int, vector<int>, greater<int> > pq;
 
 bool cmp_gems(pair<int, int> a, pair<int, int> b) {
-  if(a.first < b.first) return true;
-  if(a.first > b.first) return false;
-  return a.second > b.second;
+  return a.first > b.first;
 }
 
 bool cmp_bags(int a, int b) {
-  return a < b;
+  return a > b;
 }
 
 int main(void) {
@@ -24,36 +22,33 @@ int main(void) {
 
   cin >> N >> K;
 
+  for(int i = 0; i < N; i++) cin >> gems[i].first >> gems[i].second;
+
+  for(int i = 0; i < K; i++) cin >> bags[i];
+
+  sort(gems, gems+N, cmp_gems);
+  sort(bags, bags+K, cmp_bags);
+
+  int bag_idx = 0;
   for(int i = 0; i < N; i++) {
-	int m, v;
-	cin >> m >> v;
-	gems.push_back(make_pair(m, v));
-  }
+	int gem_m = gems[i].first;
+	int gem_v = gems[i].second;
 
-  for(int i = 0; i < K; i++) {
-	int m;
-	cin >> m;
-	bags.push_back(m);
+	if(bags[bag_idx] >= gem_m) {
+	  pq.push(gem_v);
+	  bag_idx++;
+	} else {
+	  if(!pq.empty() && pq.top() < gem_v) {
+		pq.pop();
+		pq.push(gem_v);
+	  }
+	}
   }
-
-  sort(gems.begin(), gems.end(), cmp_gems);
-  sort(bags.begin(), bags.end(), cmp_bags);
 
   long long res = 0;
-  int start_idx = 0;
-  for(int i = 0; i < K; i++) {
-	for(int j = start_idx; j < N; j++) {
-	  if(gems[j].first > bags[i]) break;
-	  pq.push(gems[j].second);
-	  start_idx = j+1;
-	}
-	
-	if(pq.empty()) {
-	  if(start_idx == N) break;
-	} else {
-	  res += pq.top();
-	  pq.pop();
-	}
+  while(!pq.empty()) {
+	res += pq.top();
+	pq.pop();
   }
 
   cout << res << "\n";
