@@ -6,6 +6,11 @@ int N, M;
 
 int lec[100000];
 
+int div_and_ceiling(int n, int divider) {
+  if(n % divider == 0) return n / divider;
+  else return (n / divider) + 1;
+}
+
 int main(void) {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
@@ -20,10 +25,10 @@ int main(void) {
 	longest_lec = max(longest_lec, lec[i]);
   }
 
-  int st = 1;
-  int en = 1000000000;
-  while(st < en) {
-	int expected = (st + en)/2;
+  int res;
+  int basis = div_and_ceiling(lec_sum, M);
+  int sp = max(basis, longest_lec);
+  for(int expected = basis; true; expected++) {
 	int local_sum = 0;
 	int blue_cnt = 1;
 	bool fail = false;
@@ -43,15 +48,13 @@ int main(void) {
 		local_sum = lec[i];
 	  }
 	}
-	if(fail) {
-	  st = expected + 1;
-	}
 	if(!fail) {
-	  en = expected;
+	  res = expected;
+	  break;
 	}
   }
 
-  cout << en << "\n";
+  cout << res << "\n";
   cout << "\n";
   return 0;
 }
