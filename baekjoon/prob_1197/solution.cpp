@@ -4,64 +4,42 @@ using namespace std;
 int v;
 int e;
 
-pair<int, pair<int, int> > edges[100000];
-int root[10001];
-int he[10001];
+vector< pair<int, int> > rous[10000];
+bool visited[10000];
+priority_queue<pair<int, int>, vector<pair<int, int> >, greater<pair<int, int> > > q;
 
-void reset() {
-  memset(he, 0, sizeof(he));
-  for(int i = 0; i <= v; i++) root[i] = i;
-}
-
-int find(int x) {
-  if(root[x] == x) {
-	return x;
-  }
-  return root[x] = find(root[x]);
-}
-
-bool conc(int x, int y) {
-  int rx = find(x);
-  int ry = find(y);
-
-  if(rx == ry) return 0;
-  
-  if(he[rx] > he[ry]) root[ry] = rx;
-  else if(he[rx] < he[ry]) root[rx] = ry;
-  else {
-	root[ry] = rx;
-	he[rx] += 1;
-  }
-  return 1;
-}
 
 int main(void) {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
+  memset(visited, false, sizeof(visited));
+
   cin >> v >> e;
   for(int i = 0; i < e; i ++) {
-	cin >> edges[i].second.first >> edges[i].second.second >> edges[i].first;
+	int input[3];
+	cin >> input[0] >> input[1] >> input[2];
+	rous[input[0] - 1].push_back(make_pair(input[1] - 1, input[2]));
+	rous[input[1] - 1].push_back(make_pair(input[0] - 1, input[2]));
   }
-  reset();
-
-  sort(edges, edges+e);
 
   int cnt = 0;
   int res = 0;
-  for(int i = 0; i < e; i++) {
-	if(cnt == v-1) break;
-
-	int cur_val = edges[i].first;
-	int cur_s = edges[i].second.first;
-	int cur_e = edges[i].second.second;
-
-	if(conc(cur_s, cur_e)) {
-	  cnt += 1;
-	  res += cur_val;
+  int cur_v = 0;
+  visited[0] = true;
+  
+  while(cnt < v - 1) {
+	for(int i = 0; i < rous[cur_v].size(); i++) {
+	  q.push(make_pair(rous[cur_v][i].second, rous[cur_v][i].first));
 	}
+	while(visited[q.top().second]) q.pop();
+	cnt += 1;
+	res += q.top().first;
+	
+	cur_v = q.top().second;
+	visited[q.top().second] = true;
   }
 
-  cout << res  << "\n";
+  cout << res << "\n";
   return 0;
 }
